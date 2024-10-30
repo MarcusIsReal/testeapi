@@ -13,44 +13,43 @@
       align-items: center;
       justify-content: center;
       padding: 20px;
-      height: 100vh; /* Faz o body ocupar a altura total da tela */
-      margin: 0; /* Remove margens padrão */
-      overflow: hidden; /* Impede a rolagem no corpo */
+      height: 100vh;
+      margin: 0;
     }
     label, select, input, button {
       margin: 10px 0;
-      width: 100%; /* Faz os elementos ocuparem 100% da largura do contêiner */
-      max-width: 300px; /* Define um limite máximo para elementos */
+      width: 100%;
+      max-width: 300px;
     }
     #SuperFlixAPIContainerVideo {
-      position: relative; /* Permite que o iframe use posição absoluta */
-      width: 100%; /* Largura total da tela */
-      height: 100%; /* Altura total da tela */
-      max-width: 800px; /* Define um limite máximo de largura */
-      max-height: 450px; /* Define um limite máximo de altura */
+      position: relative;
+      width: 100%;
+      min-height: 450px; /* Altura mínima para garantir que o vídeo apareça */
+      max-width: 800px;
+      margin-top: 20px;
     }
     #SuperFlixAPIContainerVideo iframe {
-      position: absolute; /* Para que o iframe ocupe a área do container */
+      position: absolute;
       top: 0;
       left: 0;
-      width: 100%; /* Largura total do container */
+      width: 100%;
       height: 100%; /* Altura total do container */
       border: none;
     }
     #mediaForm {
-      z-index: 1; /* Garante que o formulário apareça acima do vídeo */
-      position: relative; /* Para que o formulário se posicione corretamente */
-      background: rgba(255, 255, 255, 0.9); /* Fundo semi-transparente para destacar o formulário */
-      padding: 20px; /* Espaçamento interno */
-      border-radius: 10px; /* Bordas arredondadas */
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Sombra para destaque */
-      width: 100%; /* Largura total */
-      max-width: 300px; /* Define um limite máximo de largura */
+      z-index: 1;
+      position: relative;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 300px;
+      margin-bottom: 20px;
     }
-    /* Estilo responsivo */
     @media (max-width: 600px) {
       #SuperFlixAPIContainerVideo {
-        max-height: 300px; /* Reduz a altura máxima em telas pequenas */
+        min-height: 300px; /* Reduz a altura mínima em telas pequenas */
       }
     }
   </style>
@@ -83,6 +82,8 @@
 
   <!-- Container para o vídeo -->
   <div id="SuperFlixAPIContainerVideo"></div>
+  <br>
+  <br>
 
   <script>
     // Lista de IDs de filmes e séries
@@ -132,6 +133,9 @@
       const frame = document.getElementById('SuperFlixAPIContainerVideo');
       frame.innerHTML = ''; // Limpa o conteúdo anterior
       const url = `https://superflixapi.dev/${type}/${imdb}/${season}/${episode}`.replace(/\/$/, ""); // Remove barras finais
+      
+      console.log(url); // Adiciona um log para verificar a URL
+
       frame.innerHTML = `<iframe src="${url}" allowfullscreen></iframe>`;
     }
   </script>
