@@ -47,6 +47,12 @@
       max-width: 300px;
       margin-bottom: 20px;
     }
+    #loadingMessage {
+      display: none; /* Inicialmente escondido */
+      margin-top: 10px;
+      color: #333;
+      font-weight: bold;
+    }
     @media (max-width: 600px) {
       #SuperFlixAPIContainerVideo {
         min-height: 300px; /* Reduz a altura mínima em telas pequenas */
@@ -80,10 +86,11 @@
     <button type="button" onclick="loadContent()">Carregar Conteúdo</button>
   </form>
 
+  <!-- Mensagem de carregamento -->
+  <div id="loadingMessage">Aguarde enquanto o conteúdo está sendo carregado...</div>
+
   <!-- Container para o vídeo -->
   <div id="SuperFlixAPIContainerVideo"></div>
-  <br>
-  <br>
 
   <script>
     // Lista de IDs de filmes e séries
@@ -120,12 +127,20 @@
 
     // Função para carregar o conteúdo da SuperFlixAPI
     function loadContent() {
+      const loadingMessage = document.getElementById('loadingMessage');
+      loadingMessage.style.display = 'block'; // Exibe a mensagem de carregamento
+
       const type = document.getElementById('type').value;
       const imdb = document.getElementById('mediaSelect').value;
       const season = type === 'serie' ? document.getElementById('season').value || '' : '';
       const episode = type === 'serie' ? document.getElementById('episode').value || '' : '';
 
       SuperFlixAPIPluginJS(type, imdb, season, episode);
+      
+      // Esconde a mensagem após um tempo (pode ser ajustado conforme o tempo de carregamento)
+      setTimeout(() => {
+        loadingMessage.style.display = 'none';
+      }, 3000); // Esconde após 3 segundos (ajuste conforme necessário)
     }
 
     // Função para incorporar o iframe com o vídeo
