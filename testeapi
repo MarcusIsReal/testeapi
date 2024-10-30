@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seletor de Filmes e Séries</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #717171;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      height: 100vh; /* Faz o body ocupar a altura total da tela */
+      margin: 0; /* Remove margens padrão */
+      overflow: hidden; /* Impede a rolagem no corpo */
+    }
+    label, select, input, button {
+      margin: 10px 0;
+      width: 100%; /* Faz os elementos ocuparem 100% da largura do contêiner */
+      max-width: 300px; /* Define um limite máximo para elementos */
+    }
+    #SuperFlixAPIContainerVideo {
+      position: relative; /* Permite que o iframe use posição absoluta */
+      width: 100%; /* Largura total da tela */
+      height: 100%; /* Altura total da tela */
+      max-width: 800px; /* Define um limite máximo de largura */
+      max-height: 450px; /* Define um limite máximo de altura */
+    }
+    #SuperFlixAPIContainerVideo iframe {
+      position: absolute; /* Para que o iframe ocupe a área do container */
+      top: 0;
+      left: 0;
+      width: 100%; /* Largura total do container */
+      height: 100%; /* Altura total do container */
+      border: none;
+    }
+    #mediaForm {
+      z-index: 1; /* Garante que o formulário apareça acima do vídeo */
+      position: relative; /* Para que o formulário se posicione corretamente */
+      background: rgba(255, 255, 255, 0.9); /* Fundo semi-transparente para destacar o formulário */
+      padding: 20px; /* Espaçamento interno */
+      border-radius: 10px; /* Bordas arredondadas */
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Sombra para destaque */
+      width: 100%; /* Largura total */
+      max-width: 300px; /* Define um limite máximo de largura */
+    }
+    /* Estilo responsivo */
+    @media (max-width: 600px) {
+      #SuperFlixAPIContainerVideo {
+        max-height: 300px; /* Reduz a altura máxima em telas pequenas */
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Teste API</h1>
+
+  <!-- Formulário para Selecionar Conteúdo -->
+  <form id="mediaForm">
+    <label for="type">Escolha o tipo:</label>
+    <select id="type" onchange="updateMediaOptions()">
+      <option value="filme">Filme</option>
+      <option value="serie">Série</option>
+    </select>
+    
+    <label for="mediaSelect">Escolha o conteúdo:</label>
+    <select id="mediaSelect"></select>
+
+    <div id="seasonEpisode">
+      <label for="season">Temporada:</label>
+      <input type="number" id="season" min="1" placeholder="Número da Temporada">
+      
+      <label for="episode">Episódio:</label>
+      <input type="number" id="episode" min="1" placeholder="Número do Episódio">
+    </div>
+
+    <button type="button" onclick="loadContent()">Carregar Conteúdo</button>
+  </form>
+
+  <!-- Container para o vídeo -->
+  <div id="SuperFlixAPIContainerVideo"></div>
+
+  <script>
+    // Lista de IDs de filmes e séries
+    const mediaData = {
+      filme: [
+        { title: "Venom: A Última Rodada", id: "tt16366836" },
+        { title: "Robô Selvagem", id: "tt29623480" }
+      ],
+      serie: [
+        { title: "Prison Break: Em Busca da Verdade", id: "2288" },
+        { title: "O Senhor dos Anéis: Os Anéis de Poder", id: "84773" }
+      ]
+    };
+
+    // Atualiza o menu de seleção com os IDs de acordo com o tipo escolhido
+    function updateMediaOptions() {
+      const type = document.getElementById('type').value;
+      const mediaSelect = document.getElementById('mediaSelect');
+      mediaSelect.innerHTML = ""; // Limpa as opções anteriores
+
+      mediaData[type].forEach(media => {
+        const option = document.createElement('option');
+        option.value = media.id;
+        option.textContent = media.title;
+        mediaSelect.appendChild(option);
+      });
+
+      // Exibe/oculta os campos de temporada e episódio conforme o tipo
+      document.getElementById('seasonEpisode').style.display = type === 'serie' ? 'block' : 'none';
+    }
+
+    // Inicializa as opções de seleção ao carregar a página
+    updateMediaOptions();
+
+    // Função para carregar o conteúdo da SuperFlixAPI
+    function loadContent() {
+      const type = document.getElementById('type').value;
+      const imdb = document.getElementById('mediaSelect').value;
+      const season = type === 'serie' ? document.getElementById('season').value || '' : '';
+      const episode = type === 'serie' ? document.getElementById('episode').value || '' : '';
+
+      SuperFlixAPIPluginJS(type, imdb, season, episode);
+    }
+
+    // Função para incorporar o iframe com o vídeo
+    function SuperFlixAPIPluginJS(type, imdb, season, episode) {
+      const frame = document.getElementById('SuperFlixAPIContainerVideo');
+      frame.innerHTML = ''; // Limpa o conteúdo anterior
+      const url = `https://superflixapi.dev/${type}/${imdb}/${season}/${episode}`.replace(/\/$/, ""); // Remove barras finais
+      frame.innerHTML = `<iframe src="${url}" allowfullscreen></iframe>`;
+    }
+  </script>
+
+</body>
+</html>
